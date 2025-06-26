@@ -1,0 +1,39 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: java-app
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: java-app
+  template:
+    metadata:
+      labels:
+        app: java-app
+    spec:
+      containers:
+        - name: java-app
+          image: dockeridbiru2019/memory-app:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+            - containerPort: 9404
+          args:
+            - "-javaagent:/jmx-exporter/jmx_prometheus_javaagent.jar=9404:/jmx-exporter/config.yaml"
+          volumeMounts:
+            - name: jmx-exporter
+              mountPath: /jmx-exporter
+        - name: jmx-exporter
+          image: busybox
+          command: ["sleep", "infinity"]
+          volumeMounts:
+            - name: jmx-exporter
+              mountPath: /jmx-exporter
+      volumes:
+        - name: jmx-exporter
+          configMap:
+            name: jmx-config
+

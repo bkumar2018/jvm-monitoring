@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: jmx-config
+  namespace: monitoring
+data:
+  config.yaml: |
+    startDelaySeconds: 0
+    lowercaseOutputName: true
+    lowercaseOutputLabelNames: true
+    rules:
+      - pattern: 'java.lang:type=MemoryPool,name=(.*)'
+        name: jvm_memory_pool_bytes_used
+        type: GAUGE
+        labels:
+          pool: "$1"
+        attr: Usage.used
+      - pattern: 'java.lang:type=Memory'
+        name: jvm_memory_heap_used_bytes
+        attr: HeapMemoryUsage.used

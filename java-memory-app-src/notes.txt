@@ -1,0 +1,4 @@
+docker build -t dockeridbiru2019/memory-app:latest .
+docker login
+docker push dockeridbiru2019/memory-app:latest
+
